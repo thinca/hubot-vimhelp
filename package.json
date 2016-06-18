@@ -1,0 +1,52 @@
+{
+  "name": "hubot-vimhelp",
+  "description": "A hubot script that shows Vim's help.",
+  "version": "1.0.0",
+  "author": "thinca <thinca+npm@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/thinca/hubot-vimhelp/issues"
+  },
+  "dependencies": {
+    "vimhelp": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "coveralls": "^2.11.9",
+    "eslint": "^2.10.2",
+    "hubot-test-helper": "^1.4.4",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.5.2",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "files": [
+    "scripts"
+  ],
+  "keywords": [
+    "document",
+    "help",
+    "hubot",
+    "hubot-scripts",
+    "vim"
+  ],
+  "license": "Zlib",
+  "main": "scripts/vimhelp",
+  "peerDependencies": {
+    "hubot": "2.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thinca/hubot-vimhelp.git"
+  },
+  "scripts": {
+    "clean": "rm -fr coverage",
+    "coverage": "istanbul cover _mocha --report lcovonly",
+    "coveralls": "coveralls < coverage/lcov.info",
+    "lint": "eslint scripts test",
+    "test": "mocha"
+  }
+}
