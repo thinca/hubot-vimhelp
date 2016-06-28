@@ -54,10 +54,10 @@ const spyVimHelp = spyConstructor(vimhelp, "VimHelp");
 const spyPluginManager = spyConstructor(vimhelp, "PluginManager");
 
 const tempEnv = (envs) => {
-  let originals = {};
-  for (let key of Object.keys(envs)) {
+  const originals = {};
+  for (const key of Object.keys(envs)) {
     originals[key] = process.env[key];
-    let value = envs[key];
+    const value = envs[key];
     if (value) {
       process.env[key] = envs[key];
     } else {
@@ -65,7 +65,7 @@ const tempEnv = (envs) => {
     }
   }
   return () => {
-    for (let key of Object.keys(envs)) {
+    for (const key of Object.keys(envs)) {
       if (originals[key]) {
         process.env[key] = originals[key];
       } else {
@@ -152,7 +152,7 @@ describe('hubot-vimhelp', () => {
       VimHelp.prototype.search.restore();
     });
 
-    let testHelpWith = (done, cmd) => {
+    const testHelpWith = (done, cmd) => {
       room.user.say("bob", cmd).then(() => {
         expect(room.messages).to.eql([
           ["bob", cmd],

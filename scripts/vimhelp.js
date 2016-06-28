@@ -56,7 +56,7 @@ const CommandDefinition = {
       });
     },
     update(args, {res, pluginManager}) {
-      let pluginNames = args.length !== 0 ? args : pluginManager.pluginNames;
+      const pluginNames = args.length !== 0 ? args : pluginManager.pluginNames;
       pluginNames.forEach((pluginName) => {
         pluginManager.update([pluginName]).then(([info]) => {
           if (info.updated()) {
@@ -99,7 +99,7 @@ module.exports = (robot) => {
   }
 
   robot.hear(/^:h(?:elp)?(?:\s+(.*))?/, (res) => {
-    let word = res.match[1];
+    const word = res.match[1];
     vimHelp.search(word).then((helpText) => {
       res.send("```\n" + helpText + "\n```");
     }).catch((error) => {
@@ -120,13 +120,13 @@ module.exports = (robot) => {
       return;
     }
 
-    let args = res.match[1].split(/\s+/);
+    const args = res.match[1].split(/\s+/);
+    const context = {res, pluginManager};
     let definition = CommandDefinition;
-    let context = {res, pluginManager};
     while (typeof definition === "object") {
-      let cmd = args.shift();
+      const cmd = args.shift();
       if (typeof definition[cmd] === "function") {
-        let cont = definition[cmd](args, context);
+        const cont = definition[cmd](args, context);
         if (!cont) {
           definition = definition[cmd];
         }

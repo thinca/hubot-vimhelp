@@ -7,5 +7,7 @@ rules:
   semi:
     - error
     - always
+  prefer-const:
+    - error
 
 # vim: set ft=yaml:
