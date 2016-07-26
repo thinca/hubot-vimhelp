@@ -152,11 +152,12 @@ describe('hubot-vimhelp', () => {
       VimHelp.prototype.search.restore();
     });
 
-    const testHelpWith = (done, cmd) => {
+    const testHelpWith = (done, cmd, res) => {
+      res = res || "```\n*help*\n```";
       room.user.say("bob", cmd).then(() => {
         expect(room.messages).to.eql([
           ["bob", cmd],
-          ["hubot", "```\n*help*\n```"]
+          ["hubot", res]
         ]);
         done();
       }).catch(done);
@@ -168,6 +169,13 @@ describe('hubot-vimhelp', () => {
 
     it("can be omitted to :h", (done) => {
       testHelpWith(done, ":h help");
+    });
+
+    context("$HUBOT_VIMHELP_MARKDOWN is 0", () => {
+      envWith({HUBOT_VIMHELP_MARKDOWN: "0"});
+      it("responses without markdown", (done) => {
+        testHelpWith(done, ":help help", "*help*");
+      });
     });
 
     context("with non-existing subject", () => {

@@ -14,6 +14,9 @@
 //   HUBOT_VIMHELP_HELPLANG
 //     Comma separated value for 'helplang' options.
 //     ex: ja,en
+//   HUBOT_VIMHELP_MARKDOWN
+//     Value is 0 or 1.  When 1, use markdown format in response.
+//     Default value is 1.
 //
 // Commands:
 //   :help {subject} - Show the help of Vim
@@ -42,7 +45,7 @@ const CommandDefinition = {
         pluginManager.install(pluginName).then((result) => {
           res.send(`Installation success: ${pluginName} (${shortHash(result)})`);
         }).catch((error) => {
-          res.send(`Installation failure: ${pluginName}\n\`\`\`\n${error.errorText}\n\`\`\``);
+          res.send(`Installation failure: ${pluginName}\n${markdownPre(error.errorText)}`);
         });
       });
     },
@@ -51,7 +54,7 @@ const CommandDefinition = {
         pluginManager.uninstall(pluginName).then(() => {
           res.send(`Uninstallation success: ${pluginName}`);
         }).catch((error) => {
-          res.send(`Uninstallation failure: ${pluginName}\n\`\`\`\n${error.errorText}\n\`\`\``);
+          res.send(`Uninstallation failure: ${pluginName}\n${markdownPre(error.errorText)}`);
         });
       });
     },
@@ -63,7 +66,7 @@ const CommandDefinition = {
             res.send(`Update success: ${pluginName} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
           }
         }).catch((error) => {
-          res.send(`Update failure: ${pluginName}\n\`\`\`\n${error.errorText}\n\`\`\``);
+          res.send(`Update failure: ${pluginName}\n${markdownPre(error.errorText)}`);
         });
       });
     },
@@ -91,8 +94,18 @@ const shortHash = (hash) => {
   return hash.substring(0, 7);
 };
 
+let enableMarkdown = true;
+const markdownPre = (text) => {
+  if (enableMarkdown) {
+    return "```\n" + text + "\n```";
+  }
+  return text;
+};
+
 
 module.exports = (robot) => {
+  enableMarkdown = process.env.HUBOT_VIMHELP_MARKDOWN !== "0";
+
   const vimHelp = new VimHelp(process.env.HUBOT_VIMHELP_VIM);
   if (process.env.HUBOT_VIMHELP_HELPLANG) {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
@@ -101,7 +114,7 @@ module.exports = (robot) => {
   robot.hear(/^:h(?:elp)?(?:\s+(.*))?/, (res) => {
     const word = res.match[1];
     vimHelp.search(word).then((helpText) => {
-      res.send("```\n" + helpText + "\n```");
+      res.send(markdownPre(helpText));
     }).catch((error) => {
       res.send(error.errorText);
     });
