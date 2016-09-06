@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+v1.1.1 (2016-09-07)
+-------------------
+
+Update `vimhelp` package for security reason.
+
 v1.1.0 (2016-07-26)
 -------------------
 
