@@ -7,7 +7,7 @@
     "url": "https://github.com/thinca/hubot-vimhelp/issues"
   },
   "dependencies": {
-    "vimhelp": "^1.0.1"
+    "vimhelp": "^1.0.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
