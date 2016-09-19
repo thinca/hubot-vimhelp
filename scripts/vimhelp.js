@@ -34,6 +34,25 @@
 //   thinca <thinca+npm@gmail.com>
 
 const {VimHelp, PluginManager} = require("vimhelp");
+const PromisePool = require("es6-promise-pool");
+const CONCURRENCY = 4;
+
+const doActionConcurrency = (pluginNames, action, success, failure) => {
+  const names = pluginNames.slice();
+  const promiseProducer = () => {
+    const name = names.shift();
+    if (!name) {
+      return;
+    }
+    return action(name).then(
+      (result) => success(name, result)
+    ).catch(
+      (error) => failure(name, error)
+    );
+  };
+  const pool = new PromisePool(promiseProducer, CONCURRENCY);
+  pool.start();
+};
 
 const CommandDefinition = {
   help(args, {res}) {
@@ -41,34 +60,33 @@ const CommandDefinition = {
   },
   plugin: {
     install(args, {res, pluginManager}) {
-      args.forEach((pluginName) => {
-        pluginManager.install(pluginName).then((result) => {
-          res.send(`Installation success: ${pluginName} (${shortHash(result)})`);
-        }).catch((error) => {
-          res.send(`Installation failure: ${pluginName}\n${markdownPre(error.errorText)}`);
-        });
-      });
+      const action = pluginManager.install.bind(pluginManager);
+      doActionConcurrency(
+        args, action,
+        (name, result) => res.send(`Installation success: ${name} (${shortHash(result)})`),
+        (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(error.errorText)}`)
+      );
     },
     uninstall(args, {res, pluginManager}) {
-      args.forEach((pluginName) => {
-        pluginManager.uninstall(pluginName).then(() => {
-          res.send(`Uninstallation success: ${pluginName}`);
-        }).catch((error) => {
-          res.send(`Uninstallation failure: ${pluginName}\n${markdownPre(error.errorText)}`);
-        });
-      });
+      const action = pluginManager.uninstall.bind(pluginManager);
+      doActionConcurrency(
+        args, action,
+        (name) => res.send(`Uninstallation success: ${name}`),
+        (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(error.errorText)}`)
+      );
     },
     update(args, {res, pluginManager}) {
       const pluginNames = args.length !== 0 ? args : pluginManager.pluginNames;
-      pluginNames.forEach((pluginName) => {
-        pluginManager.update(pluginName).then((info) => {
+      const action = pluginManager.update.bind(pluginManager);
+      doActionConcurrency(
+        pluginNames, action,
+        (name, info) => {
           if (info.updated()) {
-            res.send(`Update success: ${pluginName} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
+            res.send(`Update success: ${name} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
           }
-        }).catch((error) => {
-          res.send(`Update failure: ${pluginName}\n${markdownPre(error.errorText)}`);
-        });
-      });
+        },
+        (name, error) => res.send(`Update failure: ${name}\n${markdownPre(error.errorText)}`)
+      );
     },
     list(args, {res, pluginManager}) {
       res.send(pluginManager.pluginNames.join("\n"));

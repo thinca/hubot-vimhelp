@@ -7,6 +7,7 @@
     "url": "https://github.com/thinca/hubot-vimhelp/issues"
   },
   "dependencies": {
+    "es6-promise-pool": "^2.4.4",
     "vimhelp": "^1.0.2"
   },
   "devDependencies": {
