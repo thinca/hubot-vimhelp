@@ -127,7 +127,7 @@ module.exports = (robot) => {
     vimHelp.setRTPProvider(pluginManager.rtpProvider);
   }
 
-  robot.hear(/^[!/:]vimhelp\s*(.*)$/, (res) => {
+  robot.hear(/^[!/:]vimhelp\s*([^]*)$/, (res) => {
     if (!pluginManager) {
       res.send("ERROR: Sorry, PluginManager is unavailable.");
       return;
