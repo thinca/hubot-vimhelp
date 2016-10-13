@@ -325,8 +325,8 @@ Usage: /vimhelp plugin {cmd} {args}
       describe("update", () => {
         beforeEach(() => {
           sinon.stub(PluginManager.prototype, "update")
-            .withArgs(["updated"]).returns(
-              Promise.resolve([{
+            .withArgs("updated").returns(
+              Promise.resolve({
                 pluginName: "updated",
                 pluginPath: "/path/to/updated",
                 beforeVersion: "0123456789012345678901234567890123456789",
@@ -334,10 +334,10 @@ Usage: /vimhelp plugin {cmd} {args}
                 updated() {
                   return this.beforeVersion !== this.afterVersion;
                 }
-              }])
+              })
             )
-            .withArgs(["no-updated"]).returns(
-              Promise.resolve([{
+            .withArgs("no-updated").returns(
+              Promise.resolve({
                 pluginName: "no-updated",
                 pluginPath: "/path/to/no-updated",
                 beforeVersion: "0123456789012345678901234567890123456789",
@@ -345,9 +345,9 @@ Usage: /vimhelp plugin {cmd} {args}
                 updated() {
                   return this.beforeVersion !== this.afterVersion;
                 }
-              }])
+              })
             )
-            .withArgs(["failure"]).returns(
+            .withArgs("failure").returns(
               Promise.reject({errorText: "ERROR"})
             );
         });

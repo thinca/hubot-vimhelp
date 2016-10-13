@@ -61,7 +61,7 @@ const CommandDefinition = {
     update(args, {res, pluginManager}) {
       const pluginNames = args.length !== 0 ? args : pluginManager.pluginNames;
       pluginNames.forEach((pluginName) => {
-        pluginManager.update([pluginName]).then(([info]) => {
+        pluginManager.update(pluginName).then((info) => {
           if (info.updated()) {
             res.send(`Update success: ${pluginName} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
           }
