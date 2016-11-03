@@ -8,6 +8,10 @@ node_js:
 
 sudo: false
 
+env:
+  global:
+    secure: "dMLQw4Db4+DsSxgrSZGgLDYgfh6brHieB1/5k0Igdynciopu1f3Rr/KjwGkb+d2+jnINqDgnkLAPK2LPPw3yuF6f1b8lhDsUXHcb07ar3OPz/sQnVyifSqYUzpUGEUHO/09YwyCZpjPhrFjts3dxzfYJxUlH+TeVnZb2WFa19LDgtKt6Rv3a34Ylm1IbwK+lzaAZhngS+qYWAMsPVn0g+oOZDMXV2/jTRr0IjQVJKYwKNuOjtGSxcBI9URTBDOUYi5UwrMk641RzeIAdrW+Phiw8D12sXNkxuk3c9Ni9fMuWR6jQn6BPESPshwdlGpiol9RzNzZVM14AvsnewkluS/pHtHNM3d89wIYAIRlkFq/W1MihhnkCiBh1DCUDtICJe1/AYf+lpAz5zehG6rqT30pFvQ6e5xXFl/SGDGi2GVj3+sgHSHTezOHS7Z7OpUc+0YoFsUE6eBOonmGsumk5kHEGFPwFIkrStMKwVq7LhD26MZ0b71KjHhaTlyiICDYBdfUyqP5C609ArP2fPg7RxFRDIdA3qKIhhZRwReJqn6sRg9BCbzllhmaExOalFSb/VIKhB4r7hQ7FQ3K3NdXLZOtdkGzQIAtApDsMY+L7UDIa4u9gI9wrI14y7le7vBD2bg6DM0goeexosq3dC7tk4hXbw7bz7caPfh3F1gnpZsI="
+
 cache:
   directories:
     - node_modules
@@ -18,3 +22,4 @@ script:
 
 after_success:
   - npm run coveralls
+  - '[[ -z "${TRAVIS_TAG}" || "${TRAVIS_NODE_VERSION}" != "node" ]] || npm publish'
