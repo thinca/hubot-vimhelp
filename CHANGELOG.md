@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+v1.2.0 (2016-11-03)
+-------------------
+
+- Improve behavior when many plugins are processed.
+- Fix update command.
+- Allow multiple lines to :vimhelp command.
+
+
 v1.1.1 (2016-09-07)
 -------------------
 
