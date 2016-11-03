@@ -19,6 +19,7 @@
     "istanbul": "^0.4.5",
     "mocha": "^2.5.2",
     "sinon": "^1.17.6",
+    "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0"
   },
   "engines": {

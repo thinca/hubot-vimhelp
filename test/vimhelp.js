@@ -1,5 +1,6 @@
 const chai = require("chai");
 const sinon = require("sinon");
+require('sinon-as-promised');
 chai.use(require("sinon-chai"));
 require("coffee-script/register");
 const Helper = require("hubot-test-helper");
@@ -9,6 +10,9 @@ const {VimHelp, PluginManager} = vimhelp;
 
 const {expect} = chai;
 
+process.on("unhandledRejection", (reason) => {
+  console.log(reason);
+});
 
 const spyConstructor = (ns, className) => {
   const spy = sinon.spy();
@@ -141,11 +145,9 @@ describe('hubot-vimhelp', () => {
   describe(":help", () => {
     before(() => {
       sinon.stub(VimHelp.prototype, "search")
-        .withArgs("help").returns(
-          Promise.resolve("*help*")
-        )
-        .withArgs("non-existing").returns(
-          Promise.reject({errorText: "E149: Sorry, no help for not-existing"})
+        .withArgs("help").resolves("*help*")
+        .withArgs("non-existing").rejects(
+          {errorText: "E149: Sorry, no help for not-existing"}
         );
     });
     after(() => {
@@ -247,12 +249,8 @@ Usage: /vimhelp plugin {cmd} {args}
       describe("install", () => {
         before(() => {
           sinon.stub(PluginManager.prototype, "install")
-            .withArgs("success").returns(
-              Promise.resolve("0123456789012345678901234567890123456789")
-            )
-            .withArgs("failure").returns(
-              Promise.reject({errorText: "ERROR"})
-            );
+            .withArgs("success").resolves("0123456789012345678901234567890123456789")
+            .withArgs("failure").rejects({errorText: "ERROR"});
         });
         after(() => {
           PluginManager.prototype.install.restore();
@@ -286,12 +284,8 @@ Usage: /vimhelp plugin {cmd} {args}
       describe("uninstall", () => {
         before(() => {
           sinon.stub(PluginManager.prototype, "uninstall")
-            .withArgs("success").returns(
-              Promise.resolve("/path/to/success")
-            )
-            .withArgs("failure").returns(
-              Promise.reject({errorText: "ERROR"})
-            );
+            .withArgs("success").resolves("/path/to/success")
+            .withArgs("failure").rejects({errorText: "ERROR"});
         });
         after(() => {
           PluginManager.prototype.uninstall.restore();
@@ -325,8 +319,8 @@ Usage: /vimhelp plugin {cmd} {args}
       describe("update", () => {
         beforeEach(() => {
           sinon.stub(PluginManager.prototype, "update")
-            .withArgs("updated").returns(
-              Promise.resolve({
+            .withArgs("updated").resolves(
+              {
                 pluginName: "updated",
                 pluginPath: "/path/to/updated",
                 beforeVersion: "0123456789012345678901234567890123456789",
@@ -334,10 +328,10 @@ Usage: /vimhelp plugin {cmd} {args}
                 updated() {
                   return this.beforeVersion !== this.afterVersion;
                 }
-              })
+              }
             )
-            .withArgs("no-updated").returns(
-              Promise.resolve({
+            .withArgs("no-updated").resolves(
+              {
                 pluginName: "no-updated",
                 pluginPath: "/path/to/no-updated",
                 beforeVersion: "0123456789012345678901234567890123456789",
@@ -345,11 +339,9 @@ Usage: /vimhelp plugin {cmd} {args}
                 updated() {
                   return this.beforeVersion !== this.afterVersion;
                 }
-              })
+              }
             )
-            .withArgs("failure").returns(
-              Promise.reject({errorText: "ERROR"})
-            );
+            .withArgs("failure").rejects({errorText: "ERROR"});
         });
         afterEach(() => {
           PluginManager.prototype.update.restore();
