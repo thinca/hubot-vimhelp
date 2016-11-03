@@ -208,9 +208,9 @@ describe('hubot-vimhelp', () => {
 
 Usage: /vimhelp plugin {cmd} {args}
 
-  add/install {plugin-name}
-  rm/remove/uninstall/delete {plugin-name}
-  update [{plugin-name}]
+  install/add {plugin-name}...
+  uninstall/rm/remove/delete {plugin-name}...
+  update [{plugin-name}...]
   list
 `;
 

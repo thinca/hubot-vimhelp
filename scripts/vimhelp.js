@@ -20,11 +20,11 @@
 //
 // Commands:
 //   :help {subject} - Show the help of Vim
-//   /vimhelp help - Show help for /vimhelp command
-//   /vimhelp plugin install {plugin-name} - Install {plugin-name}
-//   /vimhelp plugin uninstall {plugin-name} - Uninstall {plugin-name}
-//   /vimhelp plugin update [{plugin-names}] - Update {plugin-names}
-//   /vimhelp plugin list - Show the installed plugin list
+//   :vimhelp help - Show help for /vimhelp command
+//   :vimhelp plugin install {plugin-name} - Install {plugin-name}
+//   :vimhelp plugin uninstall {plugin-name} - Uninstall {plugin-name}
+//   :vimhelp plugin update [{plugin-names}] - Update {plugin-names}
+//   :vimhelp plugin list - Show the installed plugin list
 //
 // Notes:
 //   This script requires Vim.
@@ -102,9 +102,9 @@ const HELP_TEXT = `Plugin Manager for :help
 
 Usage: /vimhelp plugin {cmd} {args}
 
-  add/install {plugin-name}
-  rm/remove/uninstall/delete {plugin-name}
-  update [{plugin-name}]
+  install/add {plugin-name}...
+  uninstall/rm/remove/delete {plugin-name}...
+  update [{plugin-name}...]
   list
 `;
 

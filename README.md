@@ -43,6 +43,52 @@ CTRL-J          or                                      *CTRL-J*
 CTRL-N                  [count] lines downward |linewise|.
 ```
 
+## Commands
+
+### :help
+
+Show the help of Vim.
+`:h` which is a shortcut version is available.
+
+### :vimhelp
+
+This is a command for administrator.
+Some sub commands exist.
+
+#### :vimhelp help
+
+Show the simple help of `:vimhelp`.
+
+#### :vimhelp plugin
+
+This command manages the Vim plugins.
+User can show the help of Vim plugin after you installed a Vim plugin.
+
+User can specify the {plugin-name} by the one of following formats:
+
+- A repository name of [vim-scripts](https://github.com/vim-scripts)
+- A GitHub repository in `owner/repos` style
+- A URL of Git repository
+
+##### :vimhelp plugin install/add {plugin-name}...
+
+Install Vim plugins.  You can specify one or more plugin names.
+
+##### :vimhelp plugin uninstall/rm/remove/delete {plugin-name}...
+
+Uninstall Vim plugins.  You can specify one or more plugin names.
+
+##### :vimhelp plugin update [{plugin-name}...]
+
+Update installed Vim plugins.  You can specify one or more plugin names.
+All Vim plugins are updated when `{plugin-name}` is not specified.
+
+##### :vimhelp plugin list
+
+Show the list of installed Vim plugins.
+
+
+
 [npm-image]: https://img.shields.io/npm/v/hubot-vimhelp.svg
 [npm-url]: https://npmjs.org/package/hubot-vimhelp
 [node-version-image]: https://img.shields.io/node/v/hubot-vimhelp.svg
