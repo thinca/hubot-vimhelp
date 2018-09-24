@@ -13,7 +13,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "coffee-script": "^1.11.1",
-    "coveralls": "^2.11.14",
     "eslint": "^2.13.1",
     "hubot-test-helper": "=1.7.0",
     "istanbul": "^0.4.5",
@@ -47,7 +46,6 @@
   "scripts": {
     "clean": "rm -fr coverage",
     "coverage": "istanbul cover _mocha --report lcovonly",
-    "coveralls": "coveralls < coverage/lcov.info",
     "lint": "eslint scripts test",
     "test": "mocha"
   }
