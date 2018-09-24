@@ -8,10 +8,6 @@ node_js:
 
 sudo: false
 
-env:
-  global:
-    secure: "dMLQw4Db4+DsSxgrSZGgLDYgfh6brHieB1/5k0Igdynciopu1f3Rr/KjwGkb+d2+jnINqDgnkLAPK2LPPw3yuF6f1b8lhDsUXHcb07ar3OPz/sQnVyifSqYUzpUGEUHO/09YwyCZpjPhrFjts3dxzfYJxUlH+TeVnZb2WFa19LDgtKt6Rv3a34Ylm1IbwK+lzaAZhngS+qYWAMsPVn0g+oOZDMXV2/jTRr0IjQVJKYwKNuOjtGSxcBI9URTBDOUYi5UwrMk641RzeIAdrW+Phiw8D12sXNkxuk3c9Ni9fMuWR6jQn6BPESPshwdlGpiol9RzNzZVM14AvsnewkluS/pHtHNM3d89wIYAIRlkFq/W1MihhnkCiBh1DCUDtICJe1/AYf+lpAz5zehG6rqT30pFvQ6e5xXFl/SGDGi2GVj3+sgHSHTezOHS7Z7OpUc+0YoFsUE6eBOonmGsumk5kHEGFPwFIkrStMKwVq7LhD26MZ0b71KjHhaTlyiICDYBdfUyqP5C609ArP2fPg7RxFRDIdA3qKIhhZRwReJqn6sRg9BCbzllhmaExOalFSb/VIKhB4r7hQ7FQ3K3NdXLZOtdkGzQIAtApDsMY+L7UDIa4u9gI9wrI14y7le7vBD2bg6DM0goeexosq3dC7tk4hXbw7bz7caPfh3F1gnpZsI="
-
 cache:
   directories:
     - node_modules
@@ -25,4 +21,13 @@ script:
 
 after_success:
   - codecov
-  - '[[ -z "${TRAVIS_TAG}" || "${TRAVIS_NODE_VERSION}" != "node" ]] || npm publish'
+
+deploy:
+  provider: npm
+  skip_cleanup: true
+  email: thinca+npm@gmail.com
+  api_key:
+    secure: gGKW8mkszAL6KlnYvhfE5wWZNA1USiPBTBCz2a+1zACCWS4H0m3Puw/kDISG6LfETOEfGfEUm33/SDnCBfFnBsFn/Ytyy8A9cyO5lPAqlfDCh8+BII6NqGxjhyJ+uBij5Se/ykcYqPaqmGomX11Z4gksOBYMSuzU5LMZm/SHVieKg+3oWmuSO43jF4pNeVi9L6xyKuKgtsuIcS71PikmQ2WrlmGc8ShRJ3IgKw6wDfqDVqMz7C1wO/Qa5dIENgz/r215drWP9Teh0dAsgihYrQpinI0DLw8Ir1dyQSe6Rt8D1TIjhJ1ztwrbVfFolQSwNeoYlGjneuBknCkFmudGF3Rgfy/OYQkXpZDE7gWtZqoo/GdYG8BPdGOR0gzSD6lqqrnGFnDn/61v/fCYhQ8pF16ShvDlW28IXtI0LjYhdhSd8f3iLgbm3AXDZpmD9hNe308s3eFmJDSJUkcEzcXuM23HzVQokyUGjMuHKt2pZY+ZyiihQCI9jmMPlnFvNhvV9MlhCO1joLRKvlwNTd1Z9xYvUpRVeX3iT50IjnFH77luYKZgOQoYHWYC2JdGSZfe14RgCiDyoVkoOF66Bx7FRpXpqF/ZvAuwE3IOJAqI+/7x2yGN6UTy4UJJquqShSZ55oARFCYzgzXuOqDhWIUpw/mIPi1xpfKuIDsyeCzXGCA=
+  on:
+    tags: true
+    node: "node"
