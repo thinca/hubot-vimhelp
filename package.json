@@ -16,7 +16,7 @@
     "eslint": "^2.13.1",
     "hubot-test-helper": "=1.7.0",
     "istanbul": "^0.4.5",
-    "mocha": "^2.5.2",
+    "mocha": "^5.2.0",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0"
