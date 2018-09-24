@@ -3,6 +3,7 @@ const sinon = require("sinon");
 require('sinon-as-promised');
 chai.use(require("sinon-chai"));
 require("coffee-script/register");
+const sleep = require("sleep-promise");
 const Helper = require("hubot-test-helper");
 const helper = new Helper("../scripts/vimhelp.js");
 const vimhelp = require("vimhelp");
@@ -95,7 +96,7 @@ describe('hubot-vimhelp', () => {
   beforeEach(() => {
     spyVimHelp.reset();
     spyPluginManager.reset();
-    room = helper.createRoom();
+    room = helper.createRoom({httpd: false});
   });
 
   afterEach(() => {
@@ -156,7 +157,7 @@ describe('hubot-vimhelp', () => {
 
     const testHelpWith = (cmd, res) => {
       res = res || "```\n*help*\n```";
-      return room.user.say("bob", cmd).then(() => {
+      return room.user.say("bob", cmd).then(sleep(1)).then(() => {
         expect(room.messages).to.eql([
           ["bob", cmd],
           ["hubot", res]
@@ -181,7 +182,7 @@ describe('hubot-vimhelp', () => {
 
     context("with non-existing subject", () => {
       it("reports an error", () => {
-        return room.user.say("bob", ":help non-existing").then(() => {
+        return room.user.say("bob", ":help non-existing").then(sleep(1)).then(() => {
           expect(room.messages).to.eql([
             ["bob", ":help non-existing"],
             ["hubot", "E149: Sorry, no help for not-existing"]
@@ -253,7 +254,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin exists", () => {
           it("shows a success message", () => {
-            return room.user.say("bob", "/vimhelp plugin install success").then(() => {
+            return room.user.say("bob", "/vimhelp plugin install success").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin install success"],
                 ["hubot", "Installation success: success (0123456)"]
@@ -264,7 +265,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin does not exist", () => {
           it("shows a failure message", () => {
-            return room.user.say("bob", "/vimhelp plugin install failure").then(() => {
+            return room.user.say("bob", "/vimhelp plugin install failure").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin install failure"],
                 ["hubot", "Installation failure: failure\n```\nERROR\n```"]
@@ -286,7 +287,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin exists", () => {
           it("shows a success message", () => {
-            return room.user.say("bob", "/vimhelp plugin uninstall success").then(() => {
+            return room.user.say("bob", "/vimhelp plugin uninstall success").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin uninstall success"],
                 ["hubot", "Uninstallation success: success"]
@@ -297,7 +298,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin does not exist", () => {
           it("shows a failure message", () => {
-            return room.user.say("bob", "/vimhelp plugin uninstall failure").then(() => {
+            return room.user.say("bob", "/vimhelp plugin uninstall failure").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin uninstall failure"],
                 ["hubot", "Uninstallation failure: failure\n```\nERROR\n```"]
@@ -347,7 +348,7 @@ Usage: /vimhelp plugin {cmd} {args}
             stub.restore();
           });
           it("updates all plugins", () => {
-            return room.user.say("bob", "/vimhelp plugin update").then(() => {
+            return room.user.say("bob", "/vimhelp plugin update").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin update"],
                 ["hubot", "Update success: updated (0123456 => 5678901)"]
@@ -358,7 +359,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin is updated", () => {
           it("shows an updated message", () => {
-            return room.user.say("bob", "/vimhelp plugin update updated").then(() => {
+            return room.user.say("bob", "/vimhelp plugin update updated").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin update updated"],
                 ["hubot", "Update success: updated (0123456 => 5678901)"]
@@ -379,7 +380,7 @@ Usage: /vimhelp plugin {cmd} {args}
 
         context("when a plugin does not exist", () => {
           it("shows a failure message", () => {
-            return room.user.say("bob", "/vimhelp plugin update failure").then(() => {
+            return room.user.say("bob", "/vimhelp plugin update failure").then(sleep(1)).then(() => {
               expect(room.messages).to.eql([
                 ["bob", "/vimhelp plugin update failure"],
                 ["hubot", "Update failure: failure\n```\nERROR\n```"]

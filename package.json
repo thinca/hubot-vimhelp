@@ -14,12 +14,13 @@
     "chai": "^3.5.0",
     "coffee-script": "^1.11.1",
     "eslint": "^2.13.1",
-    "hubot-test-helper": "=1.7.0",
+    "hubot-test-helper": "^1.9.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "sleep-promise": "^8.0.1"
   },
   "engines": {
     "node": ">=6.0.0"
@@ -37,7 +38,7 @@
   "license": "Zlib",
   "main": "scripts/vimhelp",
   "peerDependencies": {
-    "hubot": "2.x"
+    "hubot": "3.x"
   },
   "repository": {
     "type": "git",
