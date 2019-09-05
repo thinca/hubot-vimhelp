@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "es6-promise-pool": "^2.4.4",
-    "vimhelp": "^1.2.4"
+    "vimhelp": "^1.2.5"
   },
   "devDependencies": {
     "chai": "^3.5.0",
