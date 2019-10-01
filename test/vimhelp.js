@@ -34,7 +34,7 @@ const spyConstructor = (ns, className) => {
 const stubProperty = (obj, propName) => {
   const stub = sinon.stub();
   const originalDescriptor = Object.getOwnPropertyDescriptor(obj, propName);
-  const hasOriginalValue = originalDescriptor ? null : obj.hasOwnProperty(propName);
+  const hasOriginalValue = originalDescriptor ? null : Object.prototype.hasOwnProperty.call(obj, propName);
   const originalValue = originalDescriptor ? null : obj[propName];
   Object.defineProperty(obj, propName, {
     configurable: true,
