@@ -88,6 +88,14 @@ All Vim plugins are updated when `{plugin-name}` is not specified.
 Show the list of installed Vim plugins.
 
 
+## License
+
+[zlib License](LICENSE.txt)
+
+## Author
+
+thinca <thinca+npm@gmail.com>
+
 
 [npm-image]: https://img.shields.io/npm/v/hubot-vimhelp.svg
 [npm-url]: https://npmjs.org/package/hubot-vimhelp
