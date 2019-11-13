@@ -2,7 +2,7 @@
 
 [![NPM Version][npm-image]][npm-url]
 [![Node.js Version][node-version-image]][node-version-url]
-[![Linux Build][travis-image]][travis-url]
+[![Build Status][travis-image]][travis-url]
 [![Test Coverage][codecov-image]][codecov-url]
 
 A hubot script that shows Vim's help.
@@ -93,7 +93,7 @@ Show the list of installed Vim plugins.
 [npm-url]: https://npmjs.org/package/hubot-vimhelp
 [node-version-image]: https://img.shields.io/node/v/hubot-vimhelp.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://img.shields.io/travis/thinca/hubot-vimhelp/master.svg?label=linux
-[travis-url]: https://travis-ci.org/thinca/hubot-vimhelp
+[travis-image]: https://travis-ci.com/thinca/hubot-vimhelp.svg?branch=master
+[travis-url]: https://travis-ci.com/thinca/hubot-vimhelp
 [codecov-image]: https://codecov.io/gh/thinca/hubot-vimhelp/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/thinca/hubot-vimhelp
