@@ -15,8 +15,8 @@
     "coffee-script": "^1.11.1",
     "eslint": "^6.5.1",
     "hubot-test-helper": "^1.9.0",
-    "istanbul": "^0.4.5",
     "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
     "sinon-chai": "^2.8.0",
@@ -46,8 +46,8 @@
   },
   "scripts": {
     "clean": "rm -fr coverage",
-    "coverage": "istanbul cover _mocha --report lcovonly",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "lint": "eslint scripts test",
-    "test": "mocha"
+    "test": "nyc mocha"
   }
 }
