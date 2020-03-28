@@ -1,6 +1,5 @@
 const chai = require("chai");
 const sinon = require("sinon");
-require('sinon-as-promised');
 chai.use(require("sinon-chai"));
 require("coffee-script/register");
 const sleep = require("sleep-promise");
@@ -94,8 +93,8 @@ describe('hubot-vimhelp', () => {
   let room;
 
   beforeEach(() => {
-    spyVimHelp.reset();
-    spyPluginManager.reset();
+    spyVimHelp.resetHistory();
+    spyPluginManager.resetHistory();
     room = helper.createRoom({httpd: false});
   });
 

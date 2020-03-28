@@ -2,7 +2,7 @@
 //   A hubot script that shows Vim's help.
 //
 // Dependencies:
-//   vimhelp: v1.2.2
+//   vimhelp: v2.0.0
 //
 // Configuration:
 //   HUBOT_VIMHELP_VIM
