@@ -129,13 +129,14 @@ module.exports = (robot) => {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
   }
 
-  robot.hear(/^:h(?:elp)?(?:\s+(.*))?/, (res) => {
+  robot.hear(/^:h(?:elp)?(?:\s+(.*))?/, async (res) => {
     const word = res.match[1];
-    vimHelp.search(word).then((helpText) => {
+    try {
+      const helpText = await vimHelp.search(word);
       res.send(markdownPre(helpText));
-    }).catch((error) => {
-      res.send(error.errorText);
-    });
+    } catch(e) {
+      res.send(e.errorText);
+    }
   });
 
   const PLUGINS_DIR = process.env.HUBOT_VIMHELP_PLUGINS_DIR;
