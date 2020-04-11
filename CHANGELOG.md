@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v2.0.0 (2020-04-12)
 
 - Update dependencies.
   - Now Node.js v8.3.0+ is required.
