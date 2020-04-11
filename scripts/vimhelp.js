@@ -129,7 +129,7 @@ module.exports = (robot) => {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
   }
 
-  robot.hear(/^:h(?:elp)?(?:\s+(.*))?/, async (res) => {
+  robot.hear(/^:h(?:elp)?(?:\s+(.*))$/, async (res) => {
     const word = res.match[1];
     try {
       const helpText = await vimHelp.search(word);

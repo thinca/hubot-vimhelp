@@ -191,6 +191,28 @@ describe('hubot-vimhelp', () => {
     });
   });
 
+  describe("other Ex command", () => {
+    const testHelpWith = async (cmd) => {
+      await room.user.say("bob", cmd);
+      await sleep(1);
+      expect(room.messages).to.eql([
+        ["bob", cmd],
+      ]);
+    };
+
+    describe(":help without argument", () => {
+      it("does nothing", async () => {
+        await testHelpWith(":help");
+      });
+    });
+
+    describe("Other Ex command starts with h", () => {
+      it("does nothing", async () => {
+        await testHelpWith(":hoge");
+      });
+    });
+  });
+
   describe("/vimhelp", () => {
     context("when HUBOT_VIMHELP_PLUGINS_DIR is empty", () => {
       envWith({HUBOT_VIMHELP_PLUGINS_DIR: null});
