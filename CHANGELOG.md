@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## Unreleased
+
+- Update dependencies.
+  - Now Node.js v8.3.0+ is required.
+- Fix behavior for wrong commands.
+  - Commands leading with `:h` but not `:help` such as `:hoge`.
+
+
 ## v1.2.3 (2019-09-06)
 
 - Update dependencies.
