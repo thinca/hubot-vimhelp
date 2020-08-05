@@ -5,8 +5,12 @@ require("coffee-script/register");
 const sleep = require("sleep-promise");
 const Helper = require("hubot-test-helper");
 const helper = new Helper("../scripts/vimhelp.js");
-const vimhelp = require("vimhelp");
-const {VimHelp, PluginManager} = vimhelp;
+
+// ugly: Cannot mock `requre("vimhelp")` because `defineProperty` is used.
+const vimhelp = require("vimhelp/lib/vimhelp");
+const {VimHelp} = vimhelp;
+const pluginManager = require("vimhelp/lib/plugin_manager");
+const {PluginManager} = pluginManager;
 
 const {expect} = chai;
 
@@ -55,7 +59,7 @@ const stubProperty = (obj, propName) => {
 };
 
 const spyVimHelp = spyConstructor(vimhelp, "VimHelp");
-const spyPluginManager = spyConstructor(vimhelp, "PluginManager");
+const spyPluginManager = spyConstructor(pluginManager, "PluginManager");
 
 const tempEnv = (envs) => {
   const originals = {};
