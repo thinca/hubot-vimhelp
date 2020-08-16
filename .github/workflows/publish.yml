@@ -1,0 +1,21 @@
+name: 'Publish'
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types:
+      - completed
+    branches:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  publish:
+    name: 'Publish'
+    if: "github.event.workflow_run.conclusion == 'success'"
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - uses: 'actions/checkout@v2'
+      - name: 'Publish a new npm package'
+        uses: 'JS-DevTools/npm-publish@v1'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}

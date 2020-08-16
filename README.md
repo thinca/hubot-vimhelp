@@ -2,7 +2,8 @@
 
 [![NPM Version][npm-image]][npm-url]
 [![Node.js Version][node-version-image]][node-version-url]
-[![Build Status][travis-image]][travis-url]
+[![Test][test-ci-badge]][test-ci-action]
+[![Lint][lint-ci-badge]][lint-ci-action]
 [![Test Coverage][codecov-image]][codecov-url]
 
 A hubot script that shows Vim's help.
@@ -101,7 +102,9 @@ thinca <thinca+npm@gmail.com>
 [npm-url]: https://npmjs.org/package/hubot-vimhelp
 [node-version-image]: https://img.shields.io/node/v/hubot-vimhelp.svg
 [node-version-url]: https://nodejs.org/en/download/
-[travis-image]: https://travis-ci.com/thinca/hubot-vimhelp.svg?branch=master
-[travis-url]: https://travis-ci.com/thinca/hubot-vimhelp
+[test-ci-badge]: ./../../workflows/Test/badge.svg
+[test-ci-action]: ./../../actions?query=workflow%3ATest
+[lint-ci-badge]: ./../../workflows/Lint/badge.svg
+[lint-ci-action]: ./../../actions?query=workflow%3ALint
 [codecov-image]: https://codecov.io/gh/thinca/hubot-vimhelp/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/thinca/hubot-vimhelp
