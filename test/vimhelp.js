@@ -229,24 +229,13 @@ describe('hubot-vimhelp', () => {
       });
     });
 
-    const HELP_TEXT = `Plugin Manager for :help
-
-Usage: /vimhelp plugin {cmd} {args}
-
-  install/add {plugin-name}...
-  uninstall/rm/remove/delete {plugin-name}...
-  update [{plugin-name}...]
-  list
-`;
-
     describe("no arguments", () => {
       envWith({HUBOT_VIMHELP_PLUGINS_DIR: "/path/to/plugins"});
       it("shows help message", async () => {
         await room.user.say("bob", "/vimhelp");
-        expect(room.messages).to.eql([
-          ["bob", "/vimhelp"],
-          ["hubot", HELP_TEXT],
-        ]);
+        expect(room.messages[0]).to.eql(["bob", "/vimhelp"]);
+        expect(room.messages[1][0]).to.eql("hubot");
+        expect(room.messages[1][1]).to.match(/^Utilities for :help/);
       });
     });
 
@@ -254,15 +243,23 @@ Usage: /vimhelp plugin {cmd} {args}
       envWith({HUBOT_VIMHELP_PLUGINS_DIR: "/path/to/plugins"});
       it("shows help message", async () => {
         await room.user.say("bob", "/vimhelp help");
-        expect(room.messages).to.eql([
-          ["bob", "/vimhelp help"],
-          ["hubot", HELP_TEXT],
-        ]);
+        expect(room.messages[0]).to.eql(["bob", "/vimhelp help"]);
+        expect(room.messages[1][0]).to.eql("hubot");
+        expect(room.messages[1][1]).to.match(/^Utilities for :help/);
       });
     });
 
     describe("plugin", () => {
       envWith({HUBOT_VIMHELP_PLUGINS_DIR: "/path/to/plugins"});
+
+      describe("no arguments", () => {
+        it("shows help message", async () => {
+          await room.user.say("bob", "/vimhelp plugin");
+          expect(room.messages[0]).to.eql(["bob", "/vimhelp plugin"]);
+          expect(room.messages[1][0]).to.eql("hubot");
+          expect(room.messages[1][1]).to.match(/^Plugin Manager for :help/);
+        });
+      });
 
       describe("install", () => {
         before(() => {
@@ -292,6 +289,17 @@ Usage: /vimhelp plugin {cmd} {args}
             expect(room.messages).to.eql([
               ["bob", "/vimhelp plugin install failure"],
               ["hubot", "Installation failure: failure\n```\nERROR\n```"],
+            ]);
+          });
+        });
+
+        context("can be available by `add` command", () => {
+          it("shows a success message", async () => {
+            await room.user.say("bob", "/vimhelp plugin add success");
+            await sleep(1);
+            expect(room.messages).to.eql([
+              ["bob", "/vimhelp plugin add success"],
+              ["hubot", "Installation success: success (0123456)"],
             ]);
           });
         });
@@ -325,6 +333,39 @@ Usage: /vimhelp plugin {cmd} {args}
             expect(room.messages).to.eql([
               ["bob", "/vimhelp plugin uninstall failure"],
               ["hubot", "Uninstallation failure: failure\n```\nERROR\n```"],
+            ]);
+          });
+        });
+
+        context("can be available by `rm` command", () => {
+          it("shows a success message", async () => {
+            await room.user.say("bob", "/vimhelp plugin rm success");
+            await sleep(1);
+            expect(room.messages).to.eql([
+              ["bob", "/vimhelp plugin rm success"],
+              ["hubot", "Uninstallation success: success"],
+            ]);
+          });
+        });
+
+        context("can be available by `remove` command", () => {
+          it("shows a success message", async () => {
+            await room.user.say("bob", "/vimhelp plugin remove success");
+            await sleep(1);
+            expect(room.messages).to.eql([
+              ["bob", "/vimhelp plugin remove success"],
+              ["hubot", "Uninstallation success: success"],
+            ]);
+          });
+        });
+
+        context("can be available by `delete` command", () => {
+          it("shows a success message", async () => {
+            await room.user.say("bob", "/vimhelp plugin delete success");
+            await sleep(1);
+            expect(room.messages).to.eql([
+              ["bob", "/vimhelp plugin delete success"],
+              ["hubot", "Uninstallation success: success"],
             ]);
           });
         });

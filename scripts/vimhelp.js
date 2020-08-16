@@ -34,6 +34,7 @@
 //   thinca <thinca+npm@gmail.com>
 
 const {VimHelp, PluginManager} = require("vimhelp");
+const yargs = require("yargs");
 const PromisePool = require("es6-promise-pool");
 const CONCURRENCY = 4;
 
@@ -51,62 +52,80 @@ const doActionConcurrency = (pluginNames, action, success, failure) => {
     );
   };
   const pool = new PromisePool(promiseProducer, CONCURRENCY);
-  pool.start();
+  return pool.start();
 };
 
-const CommandDefinition = {
-  help(args, {res}) {
-    res.send(HELP_TEXT);
-  },
-  plugin: {
-    install(args, {res, pluginManager}) {
-      const action = pluginManager.install.bind(pluginManager);
-      doActionConcurrency(
-        args, action,
-        (name, result) => res.send(`Installation success: ${name} (${shortHash(result)})`),
-        (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(error.errorText)}`)
-      );
-    },
-    uninstall(args, {res, pluginManager}) {
-      const action = pluginManager.uninstall.bind(pluginManager);
-      doActionConcurrency(
-        args, action,
-        (name) => res.send(`Uninstallation success: ${name}`),
-        (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(error.errorText)}`)
-      );
-    },
-    update(args, {res, pluginManager}) {
-      const pluginNames = args.length !== 0 ? args : pluginManager.pluginNames;
-      const action = pluginManager.update.bind(pluginManager);
-      doActionConcurrency(
-        pluginNames, action,
-        (name, info) => {
-          if (info.updated()) {
-            res.send(`Update success: ${name} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
-          }
+const parser = yargs
+  .scriptName("/vimhelp")
+  .locale("en")
+  .exitProcess(false)
+  .version(false)
+  .hide("help")
+  .usage("Utilities for :help")
+  .command("plugin", "Manage Vim plugins", (yargs) => {
+    return yargs
+      .usage("Plugin Manager for :help")
+      .command({
+        command: "install <plugin-names..>",
+        desc: "Install Vim plugins",
+        aliases: ["add"],
+        handler: (argv) => {
+          const {res, pluginManager, pluginNames} = argv;
+          const action = pluginManager.install.bind(pluginManager);
+          return doActionConcurrency(
+            pluginNames, action,
+            (name, result) => res.send(`Installation success: ${name} (${shortHash(result)})`),
+            (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(error.errorText)}`)
+          );
         },
-        (name, error) => res.send(`Update failure: ${name}\n${markdownPre(error.errorText)}`)
-      );
-    },
-    list(args, {res, pluginManager}) {
-      res.send(pluginManager.pluginNames.join("\n"));
-    }
-  }
-};
-CommandDefinition.plugin.add = CommandDefinition.plugin.install;
-CommandDefinition.plugin.rm = CommandDefinition.plugin.uninstall;
-CommandDefinition.plugin.remove = CommandDefinition.plugin.uninstall;
-CommandDefinition.plugin.delete = CommandDefinition.plugin.uninstall;
-
-const HELP_TEXT = `Plugin Manager for :help
-
-Usage: /vimhelp plugin {cmd} {args}
-
-  install/add {plugin-name}...
-  uninstall/rm/remove/delete {plugin-name}...
-  update [{plugin-name}...]
-  list
-`;
+      })
+      .command({
+        command: "uninstall <plugin-names..>",
+        desc: "Uninstall Vim plugins",
+        aliases: ["rm", "remove", "delete"],
+        handler: (argv) => {
+          const {res, pluginManager, pluginNames} = argv;
+          const action = pluginManager.uninstall.bind(pluginManager);
+          return doActionConcurrency(
+            pluginNames, action,
+            (name) => res.send(`Uninstallation success: ${name}`),
+            (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(error.errorText)}`)
+          );
+        },
+      })
+      .command({
+        command: "update [plugin-names..]",
+        desc: "Update Vim plugins",
+        handler: (argv) => {
+          const {res, pluginManager, pluginNames} = argv;
+          const names = pluginNames || pluginManager.pluginNames;
+          const action = pluginManager.update.bind(pluginManager);
+          return doActionConcurrency(
+            names, action,
+            (name, info) => {
+              if (info.updated()) {
+                res.send(`Update success: ${name} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
+              }
+            },
+            (name, error) => res.send(`Update failure: ${name}\n${markdownPre(error.errorText)}`)
+          );
+        },
+      })
+      .command({
+        command: "list",
+        desc: "List Vim plugins",
+        handler: (argv) => {
+          const {res, pluginManager} = argv;
+          res.send(pluginManager.pluginNames.join("\n"));
+        },
+      })
+      .demandCommand()
+      .strict()
+      ;
+  })
+  .demandCommand()
+  .strict()
+  ;
 
 const shortHash = (hash) => {
   return hash.substring(0, 7);
@@ -152,22 +171,12 @@ module.exports = (robot) => {
       return;
     }
 
-    const args = res.match[1].split(/\s+/);
-    const context = {res, pluginManager};
-    let definition = CommandDefinition;
-    while (typeof definition === "object") {
-      const cmd = args.shift();
-      if (typeof definition[cmd] === "function") {
-        const cont = definition[cmd](args, context);
-        if (!cont) {
-          definition = definition[cmd];
-        }
-      } else {
-        definition = definition[cmd];
+    const argline = res.match[1];
+    const args = argline.length === 0 ? [] : argline.split(/\s+/);
+    parser.parse(args, {res, pluginManager}, (_err, _argv, output) => {
+      if (output) {
+        res.send(output);
       }
-    }
-    if (!definition) {
-      res.send(HELP_TEXT);
-    }
+    });
   });
 };
