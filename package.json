@@ -48,6 +48,7 @@
     "clean": "rm -fr coverage",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "lint": "eslint scripts test",
-    "test": "nyc mocha"
+    "test": "nyc mocha",
+    "version": "sed -i -e \"s/^## Unreleased$/## v$(jq -r .version package.json) ($(date '+%Y-%m-%d'))/\" CHANGELOG.md && git add CHANGELOG.md"
   }
 }
