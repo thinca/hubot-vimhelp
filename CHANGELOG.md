@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v3.0.0 (2020-08-17)
 
 - Update dependencies.
   - Now Node.js v12.10.0+ is required.
