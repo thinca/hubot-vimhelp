@@ -151,20 +151,28 @@ module.exports = (robot) => {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
   }
 
-  const helpPattern =
+  const helpPattern = ":h(?:elp)?(?:\\s+(.*))$";
+  const helpRegExp =
     new RegExp(
-      "^:h(?:elp)?(?:\\s+(.*))$",
+      `^${helpPattern}`,
       process.env.HUBOT_VIMHELP_MULTILINE === "1" ? "m" : ""
     );
 
-  robot.hear(helpPattern, async (res) => {
-    const word = res.match[1];
+  const handleHelp = async (word, res) => {
     try {
       const helpText = await vimHelp.search(word);
-      res.send(markdownPre(helpText));
+      res(markdownPre(helpText));
     } catch(e) {
-      res.send(e.errorText);
+      res(e.errorText);
     }
+  };
+
+  robot.hear(helpRegExp, async (res) => {
+    await handleHelp(res.match[1], res.send.bind(res));
+  });
+
+  robot.respond(new RegExp(helpPattern), async (res) => {
+    await handleHelp(res.match[1], res.reply.bind(res));
   });
 
   const PLUGINS_DIR = process.env.HUBOT_VIMHELP_PLUGINS_DIR;

@@ -176,6 +176,10 @@ describe('hubot-vimhelp', () => {
       await testHelpWith(":h help");
     });
 
+    it("can respond", async () => {
+      await testHelpWith("@hubot :h help", "@bob ```\n*help*\n```");
+    });
+
     context("$HUBOT_VIMHELP_MARKDOWN is 0", () => {
       envWith({HUBOT_VIMHELP_MARKDOWN: "0"});
       it("responses without markdown", async () => {
@@ -199,6 +203,10 @@ describe('hubot-vimhelp', () => {
       envWith({HUBOT_VIMHELP_MULTILINE: "1"});
       it("reacts for second line", async () => {
         await testHelpWith("hello\n:help help");
+      });
+
+      it("does not reply but send", async () => {
+        await testHelpWith("@hubot\nBTW,\n:h help", "```\n*help*\n```");
       });
     });
 

@@ -5,6 +5,7 @@
 - Update dependencies.
   - Now Node.js v12.10.0+ is required.
 - Add `$HUBOT_VIMHELP_MULTILINE`.
+- Add respond support.
 
 
 ## v2.0.0 (2020-04-12)

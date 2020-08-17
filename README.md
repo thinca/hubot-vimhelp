@@ -44,6 +44,19 @@ CTRL-J          or                                      *CTRL-J*
 CTRL-N                  [count] lines downward |linewise|.
 ```
 
+Also reacts for reply.
+
+```
+user1>> @hubot :help j
+hubot>>
+@user1
+j               or                                      *j*
+<Down>          or                                      *<Down>*
+CTRL-J          or                                      *CTRL-J*
+<NL>            or                                      *<NL>* *CTRL-N*
+CTRL-N                  [count] lines downward |linewise|.
+```
+
 ## Commands
 
 ### :help
