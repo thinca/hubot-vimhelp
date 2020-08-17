@@ -183,6 +183,25 @@ describe('hubot-vimhelp', () => {
       });
     });
 
+    context("$HUBOT_VIMHELP_MULTILINE is 0", () => {
+      envWith({HUBOT_VIMHELP_MULTILINE: "0"});
+      it("does not react for second line", async () => {
+        const cmd = "hello\n:help help";
+        await room.user.say("bob", cmd);
+        await sleep(1);
+        expect(room.messages).to.eql([
+          ["bob", cmd],
+        ]);
+      });
+    });
+
+    context("$HUBOT_VIMHELP_MULTILINE is 1", () => {
+      envWith({HUBOT_VIMHELP_MULTILINE: "1"});
+      it("reacts for second line", async () => {
+        await testHelpWith("hello\n:help help");
+      });
+    });
+
     context("with non-existing subject", () => {
       it("reports an error", async () => {
         await room.user.say("bob", ":help non-existing");

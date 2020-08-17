@@ -17,6 +17,9 @@
 //   HUBOT_VIMHELP_MARKDOWN
 //     Value is 0 or 1.  When 1, use markdown format in response.
 //     Default value is 1.
+//   HUBOT_VIMHELP_MULTILINE
+//     Value is 0 or 1.  When 1, :help reacts to head of each line.
+//     Default value is 0.
 //
 // Commands:
 //   :help {subject} - Show the help of Vim
@@ -148,7 +151,13 @@ module.exports = (robot) => {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
   }
 
-  robot.hear(/^:h(?:elp)?(?:\s+(.*))$/, async (res) => {
+  const helpPattern =
+    new RegExp(
+      "^:h(?:elp)?(?:\\s+(.*))$",
+      process.env.HUBOT_VIMHELP_MULTILINE === "1" ? "m" : ""
+    );
+
+  robot.hear(helpPattern, async (res) => {
     const word = res.match[1];
     try {
       const helpText = await vimHelp.search(word);
