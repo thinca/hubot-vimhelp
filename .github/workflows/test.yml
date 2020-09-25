@@ -16,8 +16,6 @@ jobs:
         node-version:
           - "12.10"
           - "12"
-          - "13.0"
-          - "13"
           - "14.0"
           - "14"
       fail-fast: false

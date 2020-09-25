@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Allow extra text on tail of `:help`.
+- Drop Node.js v13 support.
 - Update dependencies.
 
 

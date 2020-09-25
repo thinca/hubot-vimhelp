@@ -13,6 +13,7 @@ See [`scripts/vimhelp.js`](scripts/vimhelp.js) for full documentation.
 ## Requirements
 
 - Node.js v12.10.0+
+  - v13 is not supported because it is no longer maintained
 
 - [vimhelp](https://github.com/thinca/node-vimhelp)
   - Vim
