@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v3.0.1 (2020-09-25)
 
 - Allow extra text on tail of `:help`.
 - Drop Node.js v13 support.
