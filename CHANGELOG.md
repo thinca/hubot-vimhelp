@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Allow extra text on tail of `:help`.
 - Update dependencies.
 
 

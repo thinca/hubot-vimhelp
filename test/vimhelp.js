@@ -176,6 +176,10 @@ describe('hubot-vimhelp', () => {
       await testHelpWith(":h help");
     });
 
+    it("allow extra text on tail", async () => {
+      await testHelpWith(":h help foo bar");
+    });
+
     it("can respond", async () => {
       await testHelpWith("@hubot :h help", "@bob ```\n*help*\n```");
     });

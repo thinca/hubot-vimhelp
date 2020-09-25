@@ -151,7 +151,7 @@ module.exports = (robot) => {
     vimHelp.helplang = process.env.HUBOT_VIMHELP_HELPLANG.split(",");
   }
 
-  const helpPattern = ":h(?:elp)?(?:\\s+(.*))$";
+  const helpPattern = ":h(?:elp)?(?:\\s+(\\S*))";
   const helpRegExp =
     new RegExp(
       `^${helpPattern}`,
