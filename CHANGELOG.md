@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+- Update dependencies.
+
+
 ## v3.0.1 (2020-09-25)
 
 - Allow extra text on tail of `:help`.
