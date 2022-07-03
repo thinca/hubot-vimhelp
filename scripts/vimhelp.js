@@ -10,7 +10,7 @@
 //     Use "vim" on $PATH when this is not set.
 //   HUBOT_VIMHELP_PLUGINS_DIR
 //     Path to a directory to install plugins.
-//     Plugin can not install when this is not set.
+//     Plugin cannot install when this is not set.
 //   HUBOT_VIMHELP_HELPLANG
 //     Comma separated value for 'helplang' options.
 //     ex: ja,en
