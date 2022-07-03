@@ -104,6 +104,7 @@ describe('hubot-vimhelp', () => {
 
   afterEach(() => {
     room.destroy();
+    process.stdout.removeAllListeners();
   });
 
   describe("Configuration", () => {
