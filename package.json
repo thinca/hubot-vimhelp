@@ -8,17 +8,17 @@
   },
   "dependencies": {
     "es6-promise-pool": "^2.5.0",
-    "vimhelp": "^3.0.3",
-    "yargs": "^17.0.1"
+    "vimhelp": "^4.0.0",
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "chai": "^4.3.4",
+    "chai": "^4.3.6",
     "coffee-script": "^1.12.7",
-    "eslint": "^7.32.0",
+    "eslint": "^8.19.0",
     "hubot-test-helper": "^1.9.0",
-    "mocha": "^9.0.3",
+    "mocha": "^10.0.0",
     "nyc": "^15.1.0",
-    "sinon": "^11.1.2",
+    "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
     "sleep-promise": "^9.1.0"
   },
