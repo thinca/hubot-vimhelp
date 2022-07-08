@@ -19,15 +19,18 @@ jobs:
           - "15"
           - "16.0"
           - "16"
+          - "18.0"
+          - "18"
+          - "x"
       fail-fast: false
 
     runs-on: 'ubuntu-latest'
     timeout-minutes: 10
 
     steps:
-      - uses: 'actions/checkout@v2'
+      - uses: 'actions/checkout@v3'
       - name: 'Setup Node.js ${{ matrix.node-version }}'
-        uses: 'actions/setup-node@v2-beta'
+        uses: 'actions/setup-node@v3'
         with:
           node-version: '${{ matrix.node-version }}'
       - uses: 'bahmutov/npm-install@v1'
@@ -40,7 +43,7 @@ jobs:
         run: |
           npm test
       - name: 'Send coverage'
-        uses: 'codecov/codecov-action@v1'
+        uses: 'codecov/codecov-action@v3'
         env:
           NODE: '${{ matrix.node-version }}'
           REF: '${{ github.ref }}'
