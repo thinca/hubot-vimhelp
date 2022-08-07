@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Update dependencies.
+- Drop Node.js 12 support.
+- Migrate to TypeScript.
 
 
 ## v3.0.2 (2021-05-17)
