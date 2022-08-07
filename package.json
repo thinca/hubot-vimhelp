@@ -12,6 +12,15 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/hubot": "^3.3.1",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^18.6.4",
+    "@types/sinon": "^10.0.13",
+    "@types/sinon-chai": "^3.2.8",
+    "@types/yargs": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
     "chai": "^4.3.6",
     "coffee-script": "^1.12.7",
     "eslint": "^8.21.0",
@@ -20,7 +29,9 @@
     "nyc": "^15.1.0",
     "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
-    "sleep-promise": "^9.1.0"
+    "sleep-promise": "^9.1.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -45,8 +56,9 @@
     "url": "https://github.com/thinca/hubot-vimhelp.git"
   },
   "scripts": {
+    "build": "tsc",
     "clean": "rm -fr coverage",
-    "lint": "eslint scripts test",
+    "lint": "eslint src test",
     "test": "nyc --reporter=lcovonly --reporter=text mocha --exit",
     "version": "sed -i -e \"s/^## Unreleased$/## v$(jq -r .version package.json) ($(date '+%Y-%m-%d'))/\" CHANGELOG.md && git add CHANGELOG.md"
   }

@@ -1,15 +1,20 @@
-const chai = require("chai");
-const sinon = require("sinon");
-chai.use(require("sinon-chai"));
+import * as chai from "chai";
+import * as sinon from "sinon";
+import sinonChai from "sinon-chai";
+chai.use(sinonChai);
 require("coffee-script/register");
-const sleep = require("sleep-promise");
+import sleep = require("sleep-promise");
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const Helper = require("hubot-test-helper");
-const helper = new Helper("../scripts/vimhelp.js");
+const helper = new Helper("../src/vimhelp.ts");
 
+import * as hubot from "hubot";
+
+import {ExecError} from "vimhelp";
 // ugly: Cannot mock `requre("vimhelp")` because `defineProperty` is used.
-const vimhelp = require("vimhelp/lib/vimhelp");
+import vimhelp = require("vimhelp/lib/vimhelp");
 const {VimHelp} = vimhelp;
-const pluginManager = require("vimhelp/lib/plugin_manager");
+import pluginManager = require("vimhelp/lib/plugin_manager");
 const {PluginManager} = pluginManager;
 
 const {expect} = chai;
@@ -18,10 +23,12 @@ process.on("unhandledRejection", (reason) => {
   console.log(reason);
 });
 
-const spyConstructor = (ns, className) => {
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const spyConstructor = (ns: any, className: string): sinon.SinonSpy => {
   const spy = sinon.spy();
   const StubClass = class extends ns[className] {
-    constructor(...args) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    constructor(...args: any) {
       super(...args);
       spy(...args);
     }
@@ -34,11 +41,13 @@ const spyConstructor = (ns, className) => {
   return spy;
 };
 
-const stubProperty = (obj, propName) => {
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+const stubProperty = (obj: {[key: string]: any}, propName: string): sinon.SinonStub => {
   const stub = sinon.stub();
   const originalDescriptor = Object.getOwnPropertyDescriptor(obj, propName);
   const hasOriginalValue = originalDescriptor ? null : Object.prototype.hasOwnProperty.call(obj, propName);
-  const originalValue = originalDescriptor ? null : obj[propName];
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const originalValue: any = originalDescriptor ? null : obj[propName];
   Object.defineProperty(obj, propName, {
     configurable: true,
     enumerable: true,
@@ -61,8 +70,8 @@ const stubProperty = (obj, propName) => {
 const spyVimHelp = spyConstructor(vimhelp, "VimHelp");
 const spyPluginManager = spyConstructor(pluginManager, "PluginManager");
 
-const tempEnv = (envs) => {
-  const originals = {};
+const tempEnv = (envs: NodeJS.ProcessEnv): (() => void) => {
+  const originals: NodeJS.ProcessEnv = {};
   for (const key of Object.keys(envs)) {
     originals[key] = process.env[key];
     const value = envs[key];
@@ -83,8 +92,8 @@ const tempEnv = (envs) => {
   };
 };
 
-const envWith = (envs) => {
-  let restoreEnv;
+const envWith = (envs: NodeJS.ProcessEnv) => {
+  let restoreEnv: () => void;
   before(() => {
     restoreEnv = tempEnv(envs);
   });
@@ -93,8 +102,16 @@ const envWith = (envs) => {
   });
 };
 
-describe('hubot-vimhelp', () => {
-  let room;
+type Room = hubot.Adapter & {
+  user: {
+    say(userName: string, message: string): Promise<void>;
+  };
+  messages: [string, string][];
+  destroy(): void;
+};
+
+describe("hubot-vimhelp", () => {
+  let room: Room;
 
   beforeEach(() => {
     spyVimHelp.resetHistory();
@@ -134,7 +151,7 @@ describe('hubot-vimhelp', () => {
 
     describe("$HUBOT_VIMHELP_HELPLANG", () => {
       envWith({HUBOT_VIMHELP_HELPLANG: "ja,en"});
-      let stub;
+      let stub: sinon.SinonStub;
       before(() => {
         stub = stubProperty(VimHelp.prototype, "helplang");
       });
@@ -148,18 +165,19 @@ describe('hubot-vimhelp', () => {
   });
 
   describe(":help", () => {
+    let stub: sinon.SinonStub;
     before(() => {
-      sinon.stub(VimHelp.prototype, "search")
-        .withArgs("help").resolves("*help*")
-        .withArgs("non-existing").rejects(
-          {errorText: "E149: Sorry, no help for not-existing"}
-        );
+      stub = sinon.stub(VimHelp.prototype, "search");
+      stub.withArgs("help").resolves("*help*");
+      stub.withArgs("non-existing").rejects(
+        new ExecError(1, "", "E149: Sorry, no help for not-existing")
+      );
     });
     after(() => {
-      VimHelp.prototype.search.restore();
+      stub.restore();
     });
 
-    const testHelpWith = async (cmd, res) => {
+    const testHelpWith = async (cmd: string, res?: string) => {
       res = res || "```\n*help*\n```";
       await room.user.say("bob", cmd);
       await sleep(1);
@@ -225,10 +243,42 @@ describe('hubot-vimhelp', () => {
         ]);
       });
     });
+
+    context("when other error thrown", () => {
+      before(() => {
+        stub.withArgs("other").rejects(
+          new Error("Other Error")
+        );
+      });
+      it("reports a message of error", async () => {
+        await room.user.say("bob", ":help other");
+        await sleep(1);
+        expect(room.messages).to.eql([
+          ["bob", ":help other"],
+          ["hubot", "Other Error"],
+        ]);
+      });
+    });
+
+    context("when unknown error thrown", () => {
+      before(() => {
+        stub.withArgs("unknown").rejects(
+          {message: "Unknown Error"}
+        );
+      });
+      it("reports an unknown error", async () => {
+        await room.user.say("bob", ":help unknown");
+        await sleep(1);
+        expect(room.messages).to.eql([
+          ["bob", ":help unknown"],
+          ["hubot", "[Unknown Error]"],
+        ]);
+      });
+    });
   });
 
   describe("other Ex command", () => {
-    const testHelpWith = async (cmd) => {
+    const testHelpWith = async (cmd: string) => {
       await room.user.say("bob", cmd);
       await sleep(1);
       expect(room.messages).to.eql([
@@ -251,7 +301,7 @@ describe('hubot-vimhelp', () => {
 
   describe("/vimhelp", () => {
     context("when HUBOT_VIMHELP_PLUGINS_DIR is empty", () => {
-      envWith({HUBOT_VIMHELP_PLUGINS_DIR: null});
+      envWith({HUBOT_VIMHELP_PLUGINS_DIR: ""});
       it("shows error message", async () => {
         await room.user.say("bob", "/vimhelp");
         expect(room.messages).to.eql([
@@ -294,13 +344,14 @@ describe('hubot-vimhelp', () => {
       });
 
       describe("install", () => {
+        let stub: sinon.SinonStub;
         before(() => {
-          sinon.stub(PluginManager.prototype, "install")
-            .withArgs("success").resolves("0123456789012345678901234567890123456789")
-            .withArgs("failure").rejects({errorText: "ERROR"});
+          stub = sinon.stub(PluginManager.prototype, "install");
+          stub.withArgs("success").resolves("0123456789012345678901234567890123456789");
+          stub.withArgs("failure").rejects(new ExecError(1, "", "ERROR"));
         });
         after(() => {
-          PluginManager.prototype.install.restore();
+          stub.restore();
         });
 
         context("when a plugin exists", () => {
@@ -338,13 +389,14 @@ describe('hubot-vimhelp', () => {
       });
 
       describe("uninstall", () => {
+        let stub: sinon.SinonStub;
         before(() => {
-          sinon.stub(PluginManager.prototype, "uninstall")
-            .withArgs("success").resolves("/path/to/success")
-            .withArgs("failure").rejects({errorText: "ERROR"});
+          stub = sinon.stub(PluginManager.prototype, "uninstall");
+          stub.withArgs("success").resolves("/path/to/success");
+          stub.withArgs("failure").rejects(new ExecError(1, "", "ERROR"));
         });
         after(() => {
-          PluginManager.prototype.uninstall.restore();
+          stub.restore();
         });
 
         context("when a plugin exists", () => {
@@ -404,38 +456,39 @@ describe('hubot-vimhelp', () => {
       });
 
       describe("update", () => {
+        let stub: sinon.SinonStub;
         beforeEach(() => {
-          sinon.stub(PluginManager.prototype, "update")
-            .withArgs("updated").resolves(
-              {
-                pluginName: "updated",
-                pluginPath: "/path/to/updated",
-                beforeVersion: "0123456789012345678901234567890123456789",
-                afterVersion: "5678901234567890123456789012345678901234",
-                updated() {
-                  return this.beforeVersion !== this.afterVersion;
-                }
+          stub = sinon.stub(PluginManager.prototype, "update");
+          stub.withArgs("updated").resolves(
+            {
+              pluginName: "updated",
+              pluginPath: "/path/to/updated",
+              beforeVersion: "0123456789012345678901234567890123456789",
+              afterVersion: "5678901234567890123456789012345678901234",
+              updated() {
+                return this.beforeVersion !== this.afterVersion;
               }
-            )
-            .withArgs("no-updated").resolves(
-              {
-                pluginName: "no-updated",
-                pluginPath: "/path/to/no-updated",
-                beforeVersion: "0123456789012345678901234567890123456789",
-                afterVersion: "0123456789012345678901234567890123456789",
-                updated() {
-                  return this.beforeVersion !== this.afterVersion;
-                }
+            }
+          );
+          stub.withArgs("no-updated").resolves(
+            {
+              pluginName: "no-updated",
+              pluginPath: "/path/to/no-updated",
+              beforeVersion: "0123456789012345678901234567890123456789",
+              afterVersion: "0123456789012345678901234567890123456789",
+              updated() {
+                return this.beforeVersion !== this.afterVersion;
               }
-            )
-            .withArgs("failure").rejects({errorText: "ERROR"});
+            }
+          );
+          stub.withArgs("failure").rejects(new ExecError(1, "", "ERROR"));
         });
         afterEach(() => {
-          PluginManager.prototype.update.restore();
+          stub.restore();
         });
 
         context("with no arguments", () => {
-          let stub;
+          let stub: sinon.SinonStub;
           before(() => {
             stub = stubProperty(PluginManager.prototype, "pluginNames").returns(["updated", "no-updated"]);
           });
@@ -485,7 +538,7 @@ describe('hubot-vimhelp', () => {
       });
 
       describe("list", () => {
-        let stub;
+        let stub: sinon.SinonStub;
         before(() => {
           stub = stubProperty(PluginManager.prototype, "pluginNames").returns(["updated", "no-updated"]);
         });

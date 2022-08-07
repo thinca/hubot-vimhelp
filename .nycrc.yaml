@@ -1,0 +1,10 @@
+extension:
+  - ".ts"
+all: true
+require:
+  - "ts-node/register"
+include:
+  - "src/**/*.ts"
+exclude:
+  - "**/*.d.ts"
+  - "test/**/*.ts"

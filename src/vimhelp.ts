@@ -36,12 +36,18 @@
 // Author:
 //   thinca <thinca+npm@gmail.com>
 
-const {VimHelp, PluginManager} = require("vimhelp");
-const yargs = require("yargs");
-const PromisePool = require("es6-promise-pool");
+import * as hubot from "hubot";
+import {VimHelp, PluginManager, ExecError} from "vimhelp";
+import * as yargs from "yargs";
+import PromisePool from "es6-promise-pool";
 const CONCURRENCY = 4;
 
-const doActionConcurrency = (pluginNames, action, success, failure) => {
+const doActionConcurrency = <T>(
+  pluginNames: string[],
+  action: (name: string) => Promise<T>,
+  success: (name: string, result: T) => void,
+  failure: (name: string, error: Error) => void
+) => {
   const names = pluginNames.slice();
   const promiseProducer = () => {
     const name = names.shift();
@@ -58,6 +64,12 @@ const doActionConcurrency = (pluginNames, action, success, failure) => {
   return pool.start();
 };
 
+type Argv = {
+  res: Hubot.Response,
+  pluginManager: PluginManager,
+  pluginNames: string[],
+};
+
 const parser = yargs
   .scriptName("/vimhelp")
   .locale("en")
@@ -68,38 +80,38 @@ const parser = yargs
   .command("plugin", "Manage Vim plugins", (yargs) => {
     return yargs
       .usage("Plugin Manager for :help")
-      .command({
+      .command<Argv>({
         command: "install <plugin-names..>",
-        desc: "Install Vim plugins",
+        describe: "Install Vim plugins",
         aliases: ["add"],
-        handler: (argv) => {
+        handler: async (argv) => {
           const {res, pluginManager, pluginNames} = argv;
           const action = pluginManager.install.bind(pluginManager);
           return doActionConcurrency(
             pluginNames, action,
             (name, result) => res.send(`Installation success: ${name} (${shortHash(result)})`),
-            (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(error.errorText)}`)
+            (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
       })
-      .command({
+      .command<Argv>({
         command: "uninstall <plugin-names..>",
-        desc: "Uninstall Vim plugins",
+        describe: "Uninstall Vim plugins",
         aliases: ["rm", "remove", "delete"],
-        handler: (argv) => {
+        handler: async (argv) => {
           const {res, pluginManager, pluginNames} = argv;
           const action = pluginManager.uninstall.bind(pluginManager);
           return doActionConcurrency(
             pluginNames, action,
             (name) => res.send(`Uninstallation success: ${name}`),
-            (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(error.errorText)}`)
+            (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
       })
-      .command({
+      .command<Argv>({
         command: "update [plugin-names..]",
-        desc: "Update Vim plugins",
-        handler: (argv) => {
+        describe: "Update Vim plugins",
+        handler: async (argv) => {
           const {res, pluginManager, pluginNames} = argv;
           const names = pluginNames || pluginManager.pluginNames;
           const action = pluginManager.update.bind(pluginManager);
@@ -110,32 +122,40 @@ const parser = yargs
                 res.send(`Update success: ${name} (${shortHash(info.beforeVersion)} => ${shortHash(info.afterVersion)})`);
               }
             },
-            (name, error) => res.send(`Update failure: ${name}\n${markdownPre(error.errorText)}`)
+            (name, error) => res.send(`Update failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
       })
-      .command({
+      .command<Argv>({
         command: "list",
-        desc: "List Vim plugins",
+        describe: "List Vim plugins",
         handler: (argv) => {
           const {res, pluginManager} = argv;
           res.send(pluginManager.pluginNames.join("\n"));
         },
       })
       .demandCommand()
-      .strict()
-      ;
+      .strict();
   })
   .demandCommand()
-  .strict()
-  ;
+  .strict();
 
-const shortHash = (hash) => {
+const shortHash = (hash: string) => {
   return hash.substring(0, 7);
 };
 
+const unknownErrorToString = (err: unknown): string => {
+  if (err instanceof ExecError) {
+    return err.errorText;
+  }
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return "[Unknown Error]";
+};
+
 let enableMarkdown = true;
-const markdownPre = (text) => {
+const markdownPre = (text: string) => {
   if (enableMarkdown) {
     return "```\n" + text + "\n```";
   }
@@ -143,7 +163,7 @@ const markdownPre = (text) => {
 };
 
 
-module.exports = (robot) => {
+module.exports = (robot: hubot.Robot) => {
   enableMarkdown = process.env.HUBOT_VIMHELP_MARKDOWN !== "0";
 
   const vimHelp = new VimHelp(process.env.HUBOT_VIMHELP_VIM);
@@ -158,12 +178,12 @@ module.exports = (robot) => {
       process.env.HUBOT_VIMHELP_MULTILINE === "1" ? "m" : ""
     );
 
-  const handleHelp = async (word, res) => {
+  const handleHelp = async (word: string, res: (...strings: string[]) => void) => {
     try {
       const helpText = await vimHelp.search(word);
       res(markdownPre(helpText));
     } catch(e) {
-      res(e.errorText);
+      res(unknownErrorToString(e));
     }
   };
 
@@ -176,7 +196,7 @@ module.exports = (robot) => {
   });
 
   const PLUGINS_DIR = process.env.HUBOT_VIMHELP_PLUGINS_DIR;
-  let pluginManager;
+  let pluginManager: PluginManager;
   if (PLUGINS_DIR) {
     pluginManager = new PluginManager(PLUGINS_DIR);
     vimHelp.setRTPProvider(pluginManager.rtpProvider);
