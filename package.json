@@ -8,13 +8,13 @@
   },
   "dependencies": {
     "es6-promise-pool": "^2.5.0",
-    "vimhelp": "^4.0.0",
+    "vimhelp": "^4.1.0",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
     "chai": "^4.3.6",
     "coffee-script": "^1.12.7",
-    "eslint": "^8.19.0",
+    "eslint": "^8.21.0",
     "hubot-test-helper": "^1.9.0",
     "mocha": "^10.0.0",
     "nyc": "^15.1.0",
