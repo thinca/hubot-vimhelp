@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v5.0.0 (2023-07-15)
 
 - Update dependencies.
 - Drop Node.js 14 support.
