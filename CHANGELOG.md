@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Update dependencies.
+- Drop Node.js 14 support.
 
 
 ## v4.0.0 (2022-08-08)
