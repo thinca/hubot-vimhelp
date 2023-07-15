@@ -49,7 +49,7 @@
   "license": "Zlib",
   "main": "scripts/vimhelp",
   "peerDependencies": {
-    "hubot": "3.x"
+    "hubot": "*"
   },
   "repository": {
     "type": "git",
