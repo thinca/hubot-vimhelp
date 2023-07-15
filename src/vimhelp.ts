@@ -93,7 +93,7 @@ const parser = yargs
             (name, error) => res.send(`Installation failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
-      } as yargs.CommandModule<{}, Argv>)
+      } as yargs.CommandModule<object, Argv>)
       .command({
         command: "uninstall <plugin-names..>",
         describe: "Uninstall Vim plugins",
@@ -107,7 +107,7 @@ const parser = yargs
             (name, error) => res.send(`Uninstallation failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
-      } as yargs.CommandModule<{}, Argv>)
+      } as yargs.CommandModule<object, Argv>)
       .command({
         command: "update [plugin-names..]",
         describe: "Update Vim plugins",
@@ -125,7 +125,7 @@ const parser = yargs
             (name, error) => res.send(`Update failure: ${name}\n${markdownPre(unknownErrorToString(error))}`)
           );
         },
-      } as yargs.CommandModule<{}, Argv>)
+      } as yargs.CommandModule<object, Argv>)
       .command({
         command: "list",
         describe: "List Vim plugins",
@@ -133,7 +133,7 @@ const parser = yargs
           const {res, pluginManager} = argv;
           res.send(pluginManager.pluginNames.join("\n"));
         },
-      } as yargs.CommandModule<{}, Argv>)
+      } as yargs.CommandModule<object, Argv>)
       .demandCommand()
       .strict();
   })
