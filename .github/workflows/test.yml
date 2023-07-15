@@ -17,6 +17,8 @@ jobs:
           - "16"
           - "18.0"
           - "18"
+          - "20.0"
+          - "20"
           - "latest"
       fail-fast: false
 
