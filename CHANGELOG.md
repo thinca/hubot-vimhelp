@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+- Update dependencies.
+
+
 ## v4.0.0 (2022-08-08)
 
 - Update dependencies.
