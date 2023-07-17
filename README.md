@@ -12,7 +12,7 @@ See [`scripts/vimhelp.js`](scripts/vimhelp.js) for full documentation.
 
 ## Requirements
 
-- Node.js v14.0.0+
+- Node.js v16.0.0+
 
 - [vimhelp](https://github.com/thinca/node-vimhelp)
   - Vim
